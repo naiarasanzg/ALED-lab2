@@ -26,11 +26,28 @@ public class ForwardKinematics {
 	 */
 	// Public method: returns the root of the position tree
 	public static Node computePositions(Segment root, double originX, double originY) {
-		// TODO: Implemente este método
+		return computePositions(root, originX, originY, 0);
 	}
 
 	// Private helper method that implements the recursive algorithm
 	private static Node computePositions(Segment link, double baseX, double baseY, double accumulatedAngle) {
 		// TODO: Implemente este método
+		//Caso base
+		if(link.getChildren()==null) {
+			double x,y;
+			x = baseX + link.getLength()*Math.cos(accumulatedAngle);
+			y = baseY + link.getLength()*Math.sin(accumulatedAngle);
+			return new Node(x,y);
+		}
+		// Paso recursivo
+		for(Segment s: link.getChildren()) {
+			Node nodoPadre = new Node(baseX, baseY);
+			Node nodo = computePositions(s, baseX, baseY, accumulatedAngle);
+			baseX = nodo.getX();
+			baseY = nodo.getY();
+			accumulatedAngle += s.getAngle();
+			nodoPadre.addChild(nodo);
+			nodo.addChild(nodoPadre);
+		}
 	}
 }
